@@ -1,85 +1,157 @@
-# Projeto 01 — Infraestrutura de Redes com Linux, MikroTik, Pi-hole, Squid e Samba
+# 🐧 Laboratório 01 — Infraestrutura de Redes com Linux, MikroTik, Pi-hole, Squid e Samba
 
-**Portfólio técnico | Administração de infraestrutura, redes e segurança**
+**Portfólio técnico | Administração de servidores • Redes • DNS • Proxy • Compartilhamento de arquivos**
 
-## Visão geral
-Projeto de infraestrutura de redes documentado em ambiente Linux, integrando serviços de **DNS e filtragem (Pi-hole)**, **proxy de navegação (Squid)**, **compartilhamento de arquivos (Samba)** e **roteamento e segurança de rede (MikroTik)**.
+[![Documentação](https://img.shields.io/badge/Documenta%C3%A7%C3%A3o-Laborat%C3%B3rio_01-0A66C2?style=flat-square)](./Portfolio_Infraestrutura_Redes_Fernando_Marinho_CORRIGIDO.pdf)
+[![Linux](https://img.shields.io/badge/Servidor-antiX_Linux-FCC624?style=flat-square&logo=linux&logoColor=black)](https://antixlinux.com/)
+![Status](https://img.shields.io/badge/Status-Documentado%20%7C%20Evid%C3%AAncias%20em%20revis%C3%A3o-orange?style=flat-square)
 
-O objetivo foi centralizar serviços essenciais, aplicar regras de acesso, melhorar a visibilidade do tráfego e aproveitar hardware de baixo custo.
+> **Escopo e transparência:** esta página organiza o conteúdo **já descrito na documentação existente**. O diagrama abaixo é uma **representação lógica simplificada**, não um desenho físico ou uma validação em tempo real. Comandos e verificações citados representam procedimentos documentados ou passíveis de validação; **não são novos testes executados nesta atualização**.
 
-> **Natureza do projeto:** laboratório e documentação técnica. As capturas, comandos e configurações detalhadas estão no portfólio em PDF. Exemplos e recomendações no documento não devem ser confundidos com todas as funcionalidades efetivamente implantadas.
+## 📑 Navegação
 
-## Tecnologias abordadas
+- [1. Visão geral](#1--visão-geral)
+- [2. Cenário e arquitetura](#2--cenário-e-arquitetura)
+- [3. Tecnologias e responsabilidades](#3--tecnologias-e-responsabilidades)
+- [4. Componentes do laboratório](#4--componentes-do-laboratório)
+- [5. Matriz de verificações](#5--matriz-de-verificações)
+- [6. Documentação disponível](#6--documentação-disponível)
+- [7. Evolução e pendências](#7--evolução-e-pendências)
+- [8. Autor](#8--autor)
 
-| Tecnologia | Aplicação no projeto |
+## 1. 🎯 Visão geral
+
+Este laboratório documenta uma infraestrutura de rede que reúne **MikroTik RouterOS** no papel de gateway e políticas de rede e **antiX Linux** como servidor para serviços de **Pi-hole (DNS)**, **Squid Proxy (navegação)** e **Samba (arquivos)**.
+
+O cenário foi descrito com os objetivos de centralizar serviços, aplicar controle de acesso, dar visibilidade às consultas e registros de tráfego e aproveitar recursos computacionais de baixo custo.
+
+**Competências abordadas:** administração Linux via terminal/SSH; endereçamento IP; roteamento; firewall/NAT; DNS; proxy; compartilhamentos; análise de logs e troubleshooting.
+
+## 2. 🗺️ Cenário e arquitetura
+
+### Informações registradas na documentação
+
+| Elemento | Identificação ou papel documentado |
 |---|---|
-| **antiX Linux** | Servidor para os serviços de rede |
-| **MikroTik RouterOS** | Roteamento, segmentação, firewall e NAT |
-| **Pi-hole** | Resolução e filtragem DNS, bloqueio de domínios |
-| **Squid Proxy** | Controle de navegação, cache, filtros e registros de acesso |
-| **Samba** | Compartilhamento de arquivos, usuários e permissões |
-| **TCP/IP e DHCP** | Endereçamento, conectividade e distribuição de parâmetros de rede |
-| **Logs e monitoramento** | Diagnóstico e acompanhamento de serviços e tráfego |
+| Acesso externo | Internet conectada ao gateway MikroTik |
+| Gateway | MikroTik RouterOS — roteamento, firewall e NAT |
+| Rede administrativa | `192.168.100.0/24` |
+| Rede de clientes Wi-Fi | `172.16.1.0/24` |
+| Servidor de serviços | antiX Linux — `192.168.100.174` |
+| Serviços descritos | Pi-hole, Squid Proxy e Samba |
 
-## Arquitetura da solução
+### Topologia lógica simplificada
 
-- **Internet → MikroTik:** gateway, roteamento, políticas de firewall e NAT.
-- **Rede administrativa (192.168.100.0/24):** computadores e uso do proxy Squid.
-- **Rede de clientes Wi-Fi (172.16.1.0/24):** clientes com filtragem DNS pelo Pi-hole.
-- **Servidor Linux (IP privado documentado: 192.168.100.174):** serviços Pi-hole, Squid e Samba.
+```mermaid
+flowchart TB
+    internet["🌐 Internet"] --> router["MikroTik RouterOS<br/>Gateway • Firewall • NAT"]
+    router --> adm["Rede administrativa<br/>192.168.100.0/24"]
+    router --> wifi["Rede Wi-Fi de clientes<br/>172.16.1.0/24"]
+    adm --> server["Servidor antiX Linux<br/>192.168.100.174"]
+    server --> dns["Pi-hole<br/>DNS e filtragem"]
+    server --> proxy["Squid<br/>Proxy e registros"]
+    server --> files["Samba<br/>Compartilhamento"]
+```
 
-Os diagramas do portfólio descrevem as rotas de DNS, navegação web e compartilhamento de arquivos. Os IPs mostrados são endereços privados do ambiente documentado.
+**Como interpretar:** o desenho mostra a relação funcional entre gateway, redes e serviços. Não estabelece o número de interfaces, switches, pontos de acesso, portas físicas ou regras exatas de encaminhamento. Os clientes que utilizam DNS/proxy e as políticas aplicadas devem ser confirmados nas configurações reais antes de reproduzir o ambiente.
 
-## Principais componentes
+## 3. 🛠️ Tecnologias e responsabilidades
 
-### 1. Squid Proxy
-- Controle e filtragem de acesso à web.
-- Políticas de acesso e cache.
-- Análise de registros em `/var/log/squid/access.log`.
-- Diagnóstico de desempenho e comportamento de consultas DNS.
+| Tecnologia | Papel descrito |
+|---|---|
+| **antiX Linux** | Sistema operacional do servidor de serviços |
+| **MikroTik RouterOS** | Roteamento, políticas de firewall e NAT |
+| **Pi-hole** | Resolução e filtragem de consultas DNS |
+| **Squid Proxy** | Controle de navegação, cache e registros |
+| **Samba** | Compartilhamentos, usuários e permissões |
+| **TCP/IP e DHCP** | Endereçamento, conectividade e distribuição de parâmetros |
+| **Logs e ferramentas de diagnóstico** | Inspeção e troubleshooting dos serviços |
 
-### 2. MikroTik, firewall e NAT
-- Roteamento entre redes locais e acesso à internet.
-- Regras de filtragem, controle de acesso e redirecionamento DNS.
-- Análise de regras de firewall, NAT e conexões no RouterOS.
-- Separação de tráfego por função e cuidado com loops de resolução DNS.
+## 4. ⚙️ Componentes do laboratório
 
-### 3. DNS com Pi-hole
-- Filtragem de anúncios e domínios indesejados.
-- Uso do Pi-hole para resolução DNS dos clientes definidos na arquitetura.
-- Integração com DHCP e políticas de DNS no MikroTik.
-- Verificação de consultas, bloqueios e logs.
+### 4.1 MikroTik — rede, firewall e NAT
 
-### 4. Samba
-- Compartilhamento de arquivos pela rede.
-- Configuração de usuários, grupos e permissões.
-- Validação do arquivo `smb.conf` com `testparm -s`.
-- Testes de acesso a partir de clientes Windows e Linux.
+A documentação aborda o papel do MikroTik como gateway e a análise de políticas de acesso, encaminhamento de tráfego, NAT e separação lógica de clientes. Também registra o cuidado necessário com **redirecionamentos DNS** e possíveis loops de resolução.
 
-### 5. Monitoramento e troubleshooting
-- Acompanhamento dos painéis Pi-hole e Squid e dos registros de acesso.
-- Análise de logs do Samba e de regras do MikroTik.
-- Testes de conectividade, DNS, portas e serviços com `ping`, `traceroute`, `nslookup`, `curl`, `ss` e `systemctl`.
-- Procedimentos de diagnóstico de falhas de navegação, resolução de nomes e compartilhamentos.
-- Referências a ferramentas como Zabbix, Grafana e Netdata como possibilidades de evolução, sem afirmar sua implantação.
+**Artefatos a incluir futuramente:** trechos de exportação do RouterOS **sanitizados**, com comentários explicativos sobre as regras efetivamente utilizadas.
 
-## Resultados e aprendizado
-A documentação apresenta integração dos serviços, controles de acesso, compartilhamento de arquivos, filtragem DNS e procedimentos de diagnóstico. O projeto evidencia experiência com **Linux, redes TCP/IP, MikroTik, firewall, NAT, DNS, proxy, Samba e troubleshooting**.
+### 4.2 Pi-hole — DNS e filtragem
 
-## Documentação completa
+O Pi-hole é apresentado como serviço DNS para clientes definidos na arquitetura, com bloqueio de domínios e possibilidade de consultar registros de consultas e filtros.
 
-📄 [Visualizar o portfólio de infraestrutura de redes (PDF)](./Portfolio_Infraestrutura_Redes_Fernando_Marinho_CORRIGIDO.pdf)
+**Artefatos a incluir futuramente:** captura do painel sem dados sensíveis, configuração efetiva dos encaminhadores DNS e evidências de resolução/bloqueio.
 
-O PDF inclui arquitetura, topologia, configurações, exemplos de comandos, monitoramento, segurança e conclusão.
+### 4.3 Squid Proxy — controle de navegação
 
-**Nota editorial:** a versão atual do PDF reúne duas páginas de monitoramento e deve passar por uma revisão final de conteúdo e numeração.
+O Squid é tratado como serviço de proxy com políticas de acesso, cache, filtros e análise de log. O caminho de log mencionado no material é:
 
-## Autor
+```text
+/var/log/squid/access.log
+```
+
+**Artefatos a incluir futuramente:** configuração `squid.conf` revisada, exemplos anonimizados de log e evidências de uma política testada.
+
+### 4.4 Samba — arquivos e permissões
+
+A documentação inclui compartilhamentos, usuários, grupos, controle de permissões e a referência ao comando de análise de configuração:
+
+```bash
+testparm -s
+```
+
+**Artefatos a incluir futuramente:** arquivo `smb.conf` anonimizado, matriz de permissões e evidência de acesso autorizado/negado.
+
+### 4.5 Diagnóstico e monitoramento
+
+Os procedimentos documentados mencionam análise de logs e ferramentas como `ping`, `traceroute`, `nslookup`, `curl`, `ss` e `systemctl`.
+
+**Importante:** **Zabbix, Grafana e Netdata** são citados apenas como **possibilidades de evolução**. Esta página **não afirma que essas ferramentas foram implantadas**.
+
+## 5. 🧪 Matriz de verificações
+
+Esta matriz organiza como o laboratório **pode ser validado** e o que deve ser registrado. **Não há novos resultados atribuídos a esses testes.**
+
+| Camada | Verificação sugerida | Evidência necessária | Situação neste README |
+|---|---|---|---|
+| Rede | Conectividade entre cliente, gateway e servidor | Comandos e saídas com data | A documentar |
+| DNS | Resolução de nomes e bloqueio planejado no Pi-hole | Consultas e registros anonimizados | A documentar |
+| Proxy | Aplicação de política de acesso no Squid | Configuração e log correspondente | A documentar |
+| Arquivos | Acesso permitido e negado em compartilhamentos | Permissões e teste de cliente | A documentar |
+| Firewall/NAT | Caminho de tráfego e regras específicas | Exportação sanitizada e verificação | A documentar |
+| Serviços Linux | Estado dos serviços e registros de diagnóstico | Saídas de comandos/serviços | A documentar |
+
+*“A documentar” significa que esta página ainda não apresenta uma evidência verificável para cada cenário; não significa que a atividade nunca tenha ocorrido.*
+
+## 6. 📚 Documentação disponível
+
+| Documento | Conteúdo/uso |
+|---|---|
+| **[Portfólio de infraestrutura de redes — PDF](./Portfolio_Infraestrutura_Redes_Fernando_Marinho_CORRIGIDO.pdf)** | Documento principal de apresentação técnica, topologia, exemplos e descrições |
+| **[Projeto de infraestrutura Linux — PDF](./Projeto_Infraestrutura_Linux_Portfolio.pdf)** | Material complementar já publicado no laboratório |
+| **[README geral do repositório](../README.md)** | Índice dos laboratórios de infraestrutura Linux |
+
+> **Pendência editorial já identificada:** o PDF principal contém duas páginas sobre monitoramento e requer uma revisão final da numeração e do conteúdo. Os PDFs **não foram alterados** nesta atualização.
+
+## 7. 🧭 Evolução e pendências
+
+As melhorias planejadas para tornar este laboratório mais reproduzível são:
+
+1. Revisar a versão final dos PDFs e eliminar duplicidades editoriais.
+2. Confrontar a topologia lógica com a configuração real e produzir um diagrama validado.
+3. Adicionar arquivos de configuração **somente após anonimização** e revisão de segurança.
+4. Acrescentar testes reproduzíveis com evidências e resultados reais.
+5. Registrar versões dos softwares, decisões de arquitetura e limitações observadas.
+
+Nenhuma dessas etapas é declarada como concluída apenas por constar nesta lista.
+
+## 8. 👤 Autor
 
 **Fernando Marinho Lira**  
-Infraestrutura de TI | Linux | Redes | MikroTik | Microsoft Azure | AZ-900
+Infraestrutura de TI | Linux | Redes | MikroTik | Microsoft Azure  
+**Certificação:** Microsoft Azure Fundamentals (AZ-900)
 
-[Perfil no LinkedIn](https://www.linkedin.com/in/fernando-marinho-lira/)
+[GitHub](https://github.com/Fernando-Marinho-Lira) · [LinkedIn](https://www.linkedin.com/in/fernando-marinho-lira/)
 
 ---
-*Projeto apresentado para fins de portfólio e demonstração de competências técnicas. Não publique senhas, credenciais, IPs públicos, dados pessoais de terceiros ou configurações sigilosas.*
+
+**Nota de segurança:** nunca publique senhas, tokens, IPs públicos de ambientes produtivos, dados de clientes ou exportações completas sem revisão. Os endereços privados aqui apresentados são os já informados na documentação pública do laboratório.
