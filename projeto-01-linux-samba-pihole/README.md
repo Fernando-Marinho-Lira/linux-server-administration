@@ -42,16 +42,11 @@ O cenário foi descrito com os objetivos de centralizar serviços, aplicar contr
 
 ### Topologia lógica simplificada
 
-```mermaid
-flowchart TB
-    internet["🌐 Internet"] --> router["MikroTik RouterOS<br/>Gateway • Firewall • NAT"]
-    router --> adm["Rede administrativa<br/>192.168.100.0/24"]
-    router --> wifi["Rede Wi-Fi de clientes<br/>172.16.1.0/24"]
-    adm --> server["Servidor antiX Linux<br/>192.168.100.174"]
-    server --> dns["Pi-hole<br/>DNS e filtragem"]
-    server --> proxy["Squid<br/>Proxy e registros"]
-    server --> files["Samba<br/>Compartilhamento"]
-```
+![Topologia lógica do Laboratório 01 com ícones de Linux, MikroTik e Pi-hole e identificação de Squid e Samba](./topologia-lab-01.svg)
+
+[🔍 Abrir diagrama em tamanho completo](./topologia-lab-01.svg)
+
+**Sobre as marcas:** o diagrama incorpora os ícones vetoriais de **Linux**, **MikroTik** e **Pi-hole** da coleção [Simple Icons](https://simpleicons.org/). **Squid e Samba** aparecem identificados por seus nomes, sem utilizar logotipos não verificados. A imagem é uma representação lógica simplificada com base nos dados já documentados.
 
 **Como interpretar:** o desenho mostra a relação funcional entre gateway, redes e serviços. Não estabelece o número de interfaces, switches, pontos de acesso, portas físicas ou regras exatas de encaminhamento. Os clientes que utilizam DNS/proxy e as políticas aplicadas devem ser confirmados nas configurações reais antes de reproduzir o ambiente.
 
