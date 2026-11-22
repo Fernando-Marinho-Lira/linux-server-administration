@@ -42,13 +42,13 @@ O cenário foi descrito com os objetivos de centralizar serviços, aplicar contr
 
 ### Topologia lógica simplificada
 
-![Topologia lógica do Laboratório 01 com ícones de Linux, MikroTik e Pi-hole e identificação de Squid e Samba](./topologia-lab-01.svg)
+![Infográfico de topologia do Laboratório 01: Internet, MikroTik, redes administrativa e Wi-Fi, servidor antiX Linux, Pi-hole, Squid e Samba](../617a322e-7b19-45d1-be7a-bd880c21382e.png)
 
-[🔍 Abrir diagrama em tamanho completo](./topologia-lab-01.svg)
+[🔎 Abrir a imagem completa](../617a322e-7b19-45d1-be7a-bd880c21382e.png) · [Consultar o diagrama vetorial anterior](./topologia-lab-01.svg)
 
-**Sobre as marcas:** o diagrama incorpora os ícones vetoriais de **Linux**, **MikroTik** e **Pi-hole** da coleção [Simple Icons](https://simpleicons.org/). **Squid e Samba** aparecem identificados por seus nomes, sem utilizar logotipos não verificados. A imagem é uma representação lógica simplificada com base nos dados já documentados.
+> **Nota sobre o infográfico:** imagem ilustrativa enviada pelo autor. Informações específicas nela exibidas — como provedores, velocidades dos links, modelos de equipamento e detalhes de implementação — devem ser conferidas com a configuração real e a documentação do laboratório antes de serem consideradas evidências. O diagrama anterior em SVG permanece preservado.
 
-**Como interpretar:** o desenho mostra a relação funcional entre gateway, redes e serviços. Não estabelece o número de interfaces, switches, pontos de acesso, portas físicas ou regras exatas de encaminhamento. Os clientes que utilizam DNS/proxy e as políticas aplicadas devem ser confirmados nas configurações reais antes de reproduzir o ambiente.
+**Como interpretar:** a figura apresenta uma visão ilustrativa da relação entre gateway, redes e serviços. Não substitui a topologia física validada, a configuração dos equipamentos nem os resultados dos testes.
 
 ## 3. 🛠️ Tecnologias e responsabilidades
 
