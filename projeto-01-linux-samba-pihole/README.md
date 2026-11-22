@@ -42,9 +42,9 @@ O cenário foi descrito com os objetivos de centralizar serviços, aplicar contr
 
 ### Topologia lógica simplificada
 
-![Infográfico de topologia do Laboratório 01: Internet, MikroTik, redes administrativa e Wi-Fi, servidor antiX Linux, Pi-hole, Squid e Samba](../617a322e-7b19-45d1-be7a-bd880c21382e.png)
+![Infográfico de topologia do Laboratório 01: Internet, MikroTik, redes administrativa e Wi-Fi, servidor antiX Linux, Pi-hole, Squid e Samba](./617a322e-7b19-45d1-be7a-bd880c21382e.png)
 
-[🔎 Abrir a imagem completa](../617a322e-7b19-45d1-be7a-bd880c21382e.png) · [Consultar o diagrama vetorial anterior](./topologia-lab-01.svg)
+[🔎 Abrir a imagem completa](./617a322e-7b19-45d1-be7a-bd880c21382e.png) · [Consultar o diagrama vetorial anterior](./topologia-lab-01.svg)
 
 > **Nota sobre o infográfico:** imagem ilustrativa enviada pelo autor. Informações específicas nela exibidas — como provedores, velocidades dos links, modelos de equipamento e detalhes de implementação — devem ser conferidas com a configuração real e a documentação do laboratório antes de serem consideradas evidências. O diagrama anterior em SVG permanece preservado.
 
